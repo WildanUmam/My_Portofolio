@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WILDAN_K_UMAM_N</title>
+<meta name="description" content="Portofolio 3D interaktif Wildan Khotibul Umam Nasrulloh, Fullstack Web Developer.">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{"imports":{
+ "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+ "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+</head>
+<body data-state="loading">
+<canvas id="game-canvas" aria-label="Dunia 3D The Developer Road"></canvas>
+
+<!-- LOADING -->
+<div id="loading" class="screen center">
+  <div class="brand-mini">WILDAN KHOTIBUL UMAM NASRULLOH</div>
+  <div class="bar"><i id="load-bar"></i></div>
+  <p id="load-text">Loading...... 0%</p>
+</div>
+
+<!-- MENU UTAMA -->
+<main id="menu" class="screen center" hidden>
+  <p class="eyebrow">My Journey as a Web Developer</p>
+  <h1>WILDAN KHOTIBUL UMAM NR<P><span>FULLSTACK WEB DEVELOPER</span></P> </h1>
+  <p class="sub">My Portfolio</p>
+  <div class="btns">
+    <button id="btn-start" class="btn primary">START THE JOURNEY</button>
+    <button id="btn-explore" class="btn">EXPLORE PORTFOLIO</button>
+    <button id="btn-how" class="btn">HOW TO PLAY</button>
+    <button id="btn-sound" class="btn ghost">SOUND: ON</button>
+  </div>
+  <p id="nowebgl" class="warn" hidden>WebGL tidak tersedia di perangkat ini. Game 3D dinonaktifkan, tetapi portofolio tetap bisa dibuka lewat EXPLORE PORTFOLIO.</p>
+</main>
+
+<!-- HUD -->
+<div id="hud" hidden>
+  <div class="glass hud-cp"><small>CHECKPOINT <b id="hud-cp-num">0/5</b></small><strong id="hud-cp-name">Start Line</strong></div>
+  <div class="glass hud-progress" role="progressbar" aria-label="Progress perjalanan"><i id="hud-progress"></i></div>
+  <div class="hud-actions">
+    <button id="btn-cam" class="icon glass" aria-label="Ganti kamera">CAM</button>
+    <button id="btn-settings" class="icon glass" aria-label="Pengaturan">SET</button>
+    <button id="btn-pause" class="icon glass" aria-label="Pause">II</button>
+  </div>
+  <div class="glass hud-speed"><b id="hud-speed">0</b><small>KM/H</small></div>
+  <div class="glass hud-nitro"><small>NITRO</small><div class="bar"><i id="hud-nitro"></i></div></div>
+  <div class="glass hud-hint" id="hud-hint">W/↑ Gas · S/↓ Rem · A/D Belok · Shift Nitro · Space Rem tangan · C Kamera · R Reset · Esc Pause</div>
+</div>
+
+<!-- PANEL HOLOGRAM SKILL -->
+<aside id="skill-panel" class="glass holo" hidden>
+  <button id="panel-close" class="x" aria-label="Tutup panel">✕</button>
+  <small id="panel-num"></small>
+  <h3 id="panel-title"></h3>
+  <ul id="panel-list"></ul>
+</aside>
+
+<!-- KONTROL MOBILE -->
+<div id="touch">
+  <div class="pad-left"><button data-ctl="left" aria-label="Kiri">◀</button><button data-ctl="right" aria-label="Kanan">▶</button></div>
+  <div class="pad-right"><button data-ctl="nitro">N2O</button><button data-ctl="brake">REM</button><button data-ctl="gas" class="gas">GAS</button></div>
+</div>
+
+<!-- PAUSE -->
+<section id="pause" class="screen center dim" hidden>
+  <div class="glass card">
+    <h2>PAUSED</h2>
+    <button id="p-resume" class="btn primary">Resume</button>
+    <button id="p-restart" class="btn">Restart Journey</button>
+    <button id="p-skills" class="btn">Skills Overview</button>
+    <button id="p-sound" class="btn">Sound Settings</button>
+    <button id="p-menu" class="btn">Main Menu</button>
+  </div>
+</section>
+
+<!-- MODAL: HOW TO PLAY -->
+<section id="how" class="screen center dim modal" hidden>
+  <div class="glass card wide">
+    <h2>HOW TO PLAY</h2>
+    <table class="keys">
+      <tr><td>W / ↑</td><td>Maju</td></tr><tr><td>S / ↓</td><td>Rem / mundur</td></tr>
+      <tr><td>A / ← · D / →</td><td>Belok kiri / kanan</td></tr><tr><td>Shift</td><td>Nitro</td></tr>
+      <tr><td>Space</td><td>Rem tangan</td></tr><tr><td>C</td><td>Ganti kamera</td></tr>
+      <tr><td>R</td><td>Kembalikan mobil ke jalan</td></tr><tr><td>Esc</td><td>Pause</td></tr>
+    </table>
+    <p>Di ponsel: gunakan tombol layar (kiri, kanan, gas, rem, nitro). Lewati 5 gerbang checkpoint untuk melihat skill, lalu capai garis finish.</p>
+    <button class="btn primary close-modal">Mengerti</button>
+  </div>
+</section>
+
+<!-- MODAL: SETTINGS -->
+<section id="settings" class="screen center dim modal" hidden>
+  <div class="glass card">
+    <h2>SETTINGS</h2>
+    <button id="set-sound" class="btn">Suara: ON</button>
+    <button id="set-quality" class="btn">Kualitas: TINGGI</button>
+    <button class="btn primary close-modal">Selesai</button>
+  </div>
+</section>
+
+<!-- MODAL: SKILLS OVERVIEW -->
+<section id="overview" class="screen center dim modal" hidden>
+  <div class="glass card wide">
+    <h2>SKILLS OVERVIEW</h2>
+    <div id="overview-grid" class="grid"></div>
+    <button class="btn primary close-modal">Tutup</button>
+  </div>
+</section>
+
+<!-- FINISH -->
+<section id="finish" class="screen center" hidden>
+  <p class="mission">MISSION COMPLETED</p>
+  <h2 class="fin-name">WILDAN KHOTIBUL UMAM NASRULLOH</h2>
+  <p class="fin-role">FULLSTACK WEB DEVELOPER</p>
+  <p class="fin-desc">Crafting Digital Solutions, Shaping Tomorrow</p>
+  <ul id="fin-skills" class="chips"></ul>
+  <div class="btns fin-btns">
+    <button class="btn primary" data-go="projects">VIEW MY PROJECTS</button>
+    <button class="btn" data-go="skills">EXPLORE MY SKILLS</button>
+    <button class="btn" data-go="contact">CONTACT ME</button>
+    <button id="btn-again" class="btn ghost">PLAY AGAIN</button>
+  </div>
+</section>
+
+<!-- PORTOFOLIO -->
+<div id="portfolio" hidden>
+  <header class="pf-nav glass">
+    <strong>WILDAN KHOTIBUL UMAM NASRULLOH</strong>
+    <nav>
+      <button data-sec="home">Home</button><button data-sec="about">About Me</button>
+      <button data-sec="skills">Skills</button><button data-sec="projects">Projects</button>
+      <button data-sec="experience">Experience</button><button data-sec="contact">Contact</button>
+    </nav>
+    <button id="pf-close" class="btn small">Kembali</button>
+  </header>
+  <div id="pf-scroll">
+    <section id="sec-home" class="pf-sec hero">
+      <h2 id="pf-name"></h2><p id="pf-role"></p>
+      <p>Crafting Digital Solutions, Shaping Tomorrow</p>
+    </section>
+    <section id="sec-about" class="pf-sec"><h3>About Me</h3><p id="pf-about"></p></section>
+    <section id="sec-skills" class="pf-sec"><h3>Skills</h3><div id="pf-skills" class="grid"></div></section>
+    <section id="sec-projects" class="pf-sec"><h3>Projects</h3><div id="pf-projects" class="grid"></div></section>
+    <section id="sec-experience" class="pf-sec"><h3>Experience</h3><div id="pf-exp"></div></section>
+    <section id="sec-contact" class="pf-sec"><h3>Contact</h3><div id="pf-contact" class="links"></div></section>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
